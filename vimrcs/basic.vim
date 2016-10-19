@@ -58,14 +58,6 @@ set autoread
 let mapleader = ","
 let g:mapleader = ","
 
-" Fast saving
-nmap <leader>w :w!<cr>
-
-" :W sudo saves the file 
-" (useful for handling the permission-denied error)
-command W w !sudo tee % > /dev/null
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -93,10 +85,7 @@ endif
 set ruler
 
 " Height of the command bar
-set cmdheight=2
-
-" A buffer becomes hidden when it is abandoned
-set hid
+set cmdheight=1
 
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
@@ -131,26 +120,17 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" Properly disable sound on errors on MacVim
-if has("gui_macvim")
-    autocmd GUIEnter * set vb t_vb=
-endif
-
-
 " Add a bit extra margin to the left
-set foldcolumn=1
+" set foldcolumn=1
 
+" Show Number always
+set number
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
 syntax enable 
-
-" Enable 256 colors palette in Gnome Terminal
-if $COLORTERM == 'gnome-terminal'
-    set t_Co=256
-endif
 
 try
     colorscheme desert
@@ -196,12 +176,9 @@ set smarttab
 set shiftwidth=4
 set tabstop=4
 
-" Linebreak on 500 characters
-set lbr
-set tw=500
-
-set ai "Auto indent
-set si "Smart indent
+" No Line breaks 
+set wm=0
+set tw=0
 set wrap "Wrap lines
 
 
@@ -217,27 +194,11 @@ vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
-map <c-space> ?
-
-" Disable highlight when <leader><cr> is pressed
-map <silent> <leader><cr> :noh<cr>
-
 " Smart way to move between windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
-
-" Close the current buffer
-map <leader>bd :Bclose<cr>:tabclose<cr>gT
-
-" Close all the buffers
-map <leader>ba :bufdo bd<cr>
-
-map <leader>l :bnext<cr>
-map <leader>h :bprevious<cr>
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
@@ -250,21 +211,6 @@ map <leader>t<leader> :tabnext
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
-
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
-" Specify the behavior when switching between buffers 
-try
-  set switchbuf=useopen,usetab,newtab
-  set stal=2
-catch
-endtry
 
 " Return to last edit position when opening files (You want this!)
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -283,9 +229,6 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Remap VIM 0 to first non-blank character
-map 0 ^
-
 " Move a line of text using ALT+[jk] or Command+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
@@ -310,36 +253,6 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Ag searching and cope displaying
-"    requires ag.vim - it's much better than vimgrep/grep
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" When you press gv you Ag after the selected text
-vnoremap <silent> gv :call VisualSelection('gv', '')<CR>
-
-" Open Ag and put the cursor in the right position
-map <leader>g :Ag 
-
-" When you press <leader>r you can search and replace the selected text
-vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
-
-" Do :help cope if you are unsure what cope is. It's super useful!
-"
-" When you search with Ag, display your results in cope by doing:
-"   <leader>cc
-"
-" To go to the next search result do:
-"   <leader>n
-"
-" To go to the previous search results do:
-"   <leader>p
-"
-map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Pressing ,ss will toggle and untoggle spell checking
@@ -358,16 +271,8 @@ map <leader>s? z=
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Quickly open a buffer for scribble
-map <leader>q :e ~/buffer<cr>
-
-" Quickly open a markdown buffer for scribble
-map <leader>x :e ~/buffer.md<cr>
-
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
-
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -426,7 +331,3 @@ function! <SID>BufcloseCloseIt()
    endif
 endfunction
 
-" Make VIM remember position in file after reopen
-" if has("autocmd")
-"   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
